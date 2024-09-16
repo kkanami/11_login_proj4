@@ -1,6 +1,10 @@
 package com.diworksdev.webproj4.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.diworksdev.webproj4.dao.InquiryCompleteDAO;
+import com.diworksdev.webproj4.dto.InquiryDTO;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class InquiryCompleteAction extends ActionSupport{
@@ -9,11 +13,14 @@ public class InquiryCompleteAction extends ActionSupport{
 	private String qtype;
 	private String body;
 
+	public List<InquiryDTO>inquiryDTOList=new ArrayList<InquiryDTO>();
+
 	public String execute(){
 		String ret=ERROR;
 		InquiryCompleteDAO dao=new InquiryCompleteDAO();
 		int count=dao.insert(name, qtype, body);
 		if(count>0){
+			inquiryDTOList=dao.select();
 			ret=SUCCESS;
 		}
 		return ret;
@@ -39,6 +46,14 @@ public class InquiryCompleteAction extends ActionSupport{
 
 	public void setBody(String body){
 		this.body=body;
+	}
+
+	public List<InquiryDTO>getInquiryDTOList(){
+		return inquiryDTOList;
+	}
+
+	public void setInquiryDTOList(List<InquiryDTO> inquiryDTOList){
+		this.inquiryDTOList=inquiryDTOList;
 	}
 
 }
