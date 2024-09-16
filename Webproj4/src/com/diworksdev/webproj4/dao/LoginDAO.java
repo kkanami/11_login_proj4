@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.diworksdev.webproj4.dto.LoginDTO;
 import com.diworksdev.webproj4.util.DBConnector;
@@ -12,10 +14,13 @@ public class LoginDAO {
 	public String username;
 	public String password;
 
-	public LoginDTO select(String username,String password){
+	public List<LoginDTO>loginDTOList=new ArrayList<LoginDTO>();
+
+
+	public List<LoginDTO> select(String username,String password){
 		DBConnector db=new DBConnector();
 		Connection con=db.getConnection();
-		LoginDTO dto=new LoginDTO();
+
 
 		String sql="select*from users where user_name=? and password=?";
 		try{
@@ -23,12 +28,19 @@ public class LoginDAO {
 			ps.setString(1, username);
 			ps.setString(2, password);
 			ResultSet rs=ps.executeQuery();
-			if(rs.next()){
+
+			while(rs.next()){
+				LoginDTO dto=new LoginDTO();
 				dto.setUsername(rs.getString("user_name"));
 				dto.setPassword(rs.getString("password"));
-			}else{
+				loginDTOList.add(dto);
+			}
+
+			if(loginDTOList.size()<=0){
+				LoginDTO dto=new LoginDTO();
 				dto.setUsername("該当なし");
 				dto.setPassword("該当なし");
+				loginDTOList.add(dto);
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -38,6 +50,6 @@ public class LoginDAO {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
-		return dto;
+		return loginDTOList;
 	}
 }
